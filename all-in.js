@@ -1,3 +1,12 @@
+function checkWin() {
+    url = window.location.href;
+    if(url.indexOf("?mode=table")>0){
+        instantiateObservers();
+    }
+}
+
+checkWin();
+
 var config = {attributes: true, childList: true, characterData: true};
 
 var callback = function(mutationsList, observer) {
@@ -28,7 +37,7 @@ function instantiateObservers() {
     }
 }
 
-instantiateObservers();
+//instantiateObservers(); //For Testing
 
 function getPlayerCards() {
     var playerCardsArr = [];
@@ -40,7 +49,7 @@ function getPlayerCards() {
         playerCardsArr.push(card);
         }
     }
-    console.log(playerCardsArr);
+    checkDictionary(playerCardsArr);
 }
 
 function getCommunityCards() {
@@ -52,6 +61,42 @@ function getCommunityCards() {
             var imgUrlSpl = imgUrl.split("/");
             var card = imgUrlSpl[imgUrlSpl.length-2]+":"+imgUrlSpl[imgUrlSpl.length-1];
             communityCardsArr.push(card);
-        } console.log(communityCardsArr);
+        } 
+        checkDictionary(communityCardsArr);
     } 
+}
+
+function checkDictionary(cards) {
+    var dictionary = new XMLHttpRequest();
+    dictionary.open("GET","dictionary.csv");
+    dictionary.addEventListener("load", function() {
+        initialArray = JSON.parse(dictionary.response);
+        console.log(initialArray);
+    });
+    dictionary.send();
+}
+
+function createSimulation(ccards, pcards) {
+    if(!window.open("","com_poker_simualtionwindow")){
+        var pptwin = window.open("propokertools.com/simulations", "com_poker_simualtionwindow");
+    } else {
+        var pptwin = window.open("","com_poker_simualtionwindow");
+    }
+    pptwin.focus();
+    pptwin.onload = function() {
+        clearAllInputs();
+        pptwin.document.getElementById("gameSelector").value = "o85";
+        pptwin.document.getElementById("boardField").value = ccards;
+        if(pcards.length>2){
+            toggleHands();
+        }
+        for(i=0;i<pcards.length;i++){
+            var hIn = "h" + (i+1);
+            pptwin.document.getElementById(hIn).value = pcards[i];
+            if(i == (pcards.length-1)){
+                addSimResults();
+            }
+        }
+    }
+
 }
