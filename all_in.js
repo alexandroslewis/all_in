@@ -1,12 +1,3 @@
-function checkWin() {
-    url = window.location.href;
-    if(url.indexOf("?mode=table")>0){
-        instantiateObservers();
-    }
-}
-
-checkWin();
-
 var config = {attributes: true, childList: true, characterData: true};
 
 var callback = function(mutationsList, observer) {
@@ -31,13 +22,14 @@ var callback = function(mutationsList, observer) {
 var observer = new MutationObserver(callback);
 
 function instantiateObservers() {
+    console.log("working...");
     var playerNames = document.getElementsByClassName("player_name");
     for(i=0;i<playerNames.length;i++){
         observer.observe(playerNames[i], config);
     }
 }
 
-//instantiateObservers(); //For Testing
+instantiateObservers();
 
 function getPlayerCards() {
     var playerCardsArr = [];
@@ -45,12 +37,12 @@ function getPlayerCards() {
     for(i=0;i<playerCards.length;i++){
         var imgUrl = playerCards[i].src
         var imgUrlSpl = imgUrl.split("/")
-        var card = imgUrlSpl[imgUrlSpl.length-2]+":"+imgUrlSpl[imgUrlSpl.length-1];
+        var card = imgUrlSpl[imgUrlSpl.length-1];
         playerCardsArr.push(card);
-        }
     }
-    checkDictionary(playerCardsArr);
+    checkDictionary(playerCardsArr, "play");
 }
+    
 
 function getCommunityCards() {
     var communityCards = document.getElementById("community_cards").childNodes;
@@ -59,44 +51,37 @@ function getCommunityCards() {
         for(i=0;i<communityCards.length;i++){
             var imgUrl = communityCards[i].src
             var imgUrlSpl = imgUrl.split("/");
-            var card = imgUrlSpl[imgUrlSpl.length-2]+":"+imgUrlSpl[imgUrlSpl.length-1];
+            var card = imgUrlSpl[imgUrlSpl.length-1];
             communityCardsArr.push(card);
         } 
-        checkDictionary(communityCardsArr);
+        checkDictionary(communityCardsArr, "comm");
     } 
 }
 
 function checkDictionary(cards) {
+    var cards = ["34.png","41.png", "7.png"];
+    var type = "comm";
+    var ccardsstr ="";
+    var pcardsstr="";
     var dictionary = new XMLHttpRequest();
-    dictionary.open("GET","dictionary.csv");
+    dictionary.open("GET", chrome.runtime.getURL("dictionary.json"), true);
     dictionary.addEventListener("load", function() {
-        initialArray = JSON.parse(dictionary.response);
-        console.log(initialArray);
-    });
-    dictionary.send();
-}
-
-function createSimulation(ccards, pcards) {
-    if(!window.open("","com_poker_simualtionwindow")){
-        var pptwin = window.open("propokertools.com/simulations", "com_poker_simualtionwindow");
-    } else {
-        var pptwin = window.open("","com_poker_simualtionwindow");
-    }
-    pptwin.focus();
-    pptwin.onload = function() {
-        clearAllInputs();
-        pptwin.document.getElementById("gameSelector").value = "o85";
-        pptwin.document.getElementById("boardField").value = ccards;
-        if(pcards.length>2){
-            toggleHands();
-        }
-        for(i=0;i<pcards.length;i++){
-            var hIn = "h" + (i+1);
-            pptwin.document.getElementById(hIn).value = pcards[i];
-            if(i == (pcards.length-1)){
-                addSimResults();
+        dictionaryArr = JSON.parse(dictionary.response);
+        if(type == "comm"){
+          for(i=0;i<cards.length;i++){
+            var cardValue = dictionaryArr[cards[i]];
+            ccardsstr += cardValue;
+            if(i==cards.length-1){
+              chrome.storage.local.set({"board":ccardsstr});
             }
+          }
+        } else if(type == "play"){
+          
         }
-    }
-
+    });
+    dictionary.send(); 
+    chrome.storage.local.clear();
+    chrome.storage.local.set({"hands":pcardsstr});
+    chrome.storage.local.set({"board":ccardsstr});
+    chrome.runtime.sendMessage("runSimulation");
 }

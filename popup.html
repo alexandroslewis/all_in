@@ -1,11 +1,12 @@
 <!doctype html>
 <html>
 <head>
-    <title>All-in</title>
+    <title>All in</title>
     <style>
         body {
             font-family: "Raleway", sans-serif;
             font-size: 100%;
+            width:100px;
         }
         #status {
             white-space: pre;
@@ -13,64 +14,52 @@
             overflow: hidden;
             max-width: 400px;
         }
-        .onoffswitch {
-            position: relative; width: 90px;
-            -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+        .button {
+            display: inline-block;
+            border-radius: 4px;
+            background-color: #f4511e;
+            border: none;
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 18px;
+            padding: 10px;
+            width: 90%;
+            transition: all 0.5s;
+            cursor: pointer;
+            margin: 5px;
         }
-        .onoffswitch-checkbox {
-            display: none;
+        
+        .button span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
         }
-        .onoffswitch-label {
-            display: block; overflow: hidden; cursor: pointer;
-            border: 2px solid #999999; border-radius: 20px;
+        
+        .button span:after {
+            content: '\00bb';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -20px;
+            transition: 0.5s;
         }
-        .onoffswitch-inner {
-            display: block; width: 200%; margin-left: -100%;
-            transition: margin 0.3s ease-in 0s;
+        
+        .button:hover span {
+            padding-right: 25px;
         }
-        .onoffswitch-inner:before, .onoffswitch-inner:after {
-            display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
-            font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
-            box-sizing: border-box;
-        }
-        .onoffswitch-inner:before {
-            content: "ON";
-            padding-left: 10px;
-            background-color: #34A7C1; color: #FFFFFF;
-        }
-        .onoffswitch-inner:after {
-            content: "OFF";
-            padding-right: 10px;
-            background-color: #EEEEEE; color: #999999;
-            text-align: right;
-        }
-        .onoffswitch-switch {
-            display: block; width: 18px; margin: 6px;
-            background: #FFFFFF;
-            position: absolute; top: 0; bottom: 0;
-            right: 56px;
-            border: 2px solid #999999; border-radius: 20px;
-            transition: all 0.3s ease-in 0s; 
-        }
-        .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
-            margin-left: 0;
-        }
-        .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-            right: 0px; 
+        
+        .button:hover span:after {
+            opacity: 1;
+            right: 0;
         }
     </style>
     <script src="jquery.min.js"></script>
 </head>
-<body>
+<body style="text-align:center;">
     <h1>All In</h1>
-    <div class="onoffswitch">
-        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="allinswitch" onclick="onOff()">
-        <label class="onoffswitch-label" for="allinswitch">
-            <span class="onoffswitch-inner"></span>
-            <span class="onoffswitch-switch"></span>
-        </label>
-    </div>
-    <script type="text/javascript" src="all-in.js"></script>
+    <button id="start-allin" class="button"><span>Start</span></button>
+    <button id="test">test</button>
+    <script src="button.js"></script>
 </body>
-<script type="text/javascript" src="slider.js"></script>
 </html>
