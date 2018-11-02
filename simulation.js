@@ -5,10 +5,11 @@ chrome.storage.local.get(['board','hands'], function(result) {
 });
 
 function createSimulation(ccards, pcards) {
+    chrome.storage.local.clear();
+    var toggle = document.getElementById("handToggler");
     document.getElementById("gameSelector").value = "o85";
     document.getElementById("boardField").value = ccards;
-    if(pcards.length>2){
-        var toggle = document.getElementById("handToggler");
+    if(pcards.length>2 && toggle.innerText == "More hands"){
         toggle.click();
     }
     for(i=0;i<pcards.length;i++){

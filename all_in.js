@@ -2,7 +2,6 @@ var config = {attributes: true, childList: true, characterData: true};
 
 var callback = function(mutationsList, observer) {
     for(var mutation of mutationsList) {
-        console.log(mutation.target.innerText)
         if (mutation.target.className == "player_name" && mutation.target.innerText == 'ALL IN') {
             observer.disconnect();
             var communityCards = document.getElementById("community_cards");
@@ -58,11 +57,9 @@ function getCommunityCards() {
     } 
 }
 
-function checkDictionary(cards) {
-    var cards = ["34.png","41.png", "7.png"];
-    var type = "comm";
-    var ccardsstr ="";
-    var pcardsstr="";
+function checkDictionary(cards, type) {
+    var ccardsstr = "";
+    var playerHands = [];
     var dictionary = new XMLHttpRequest();
     dictionary.open("GET", chrome.runtime.getURL("dictionary.json"), true);
     dictionary.addEventListener("load", function() {
@@ -76,12 +73,33 @@ function checkDictionary(cards) {
             }
           }
         } else if(type == "play"){
-          
+            var hand = "";
+            var handSize = 5;
+            var numHands = (cards.length/handSize);
+            for(i=0;i<cards.length;i++){
+              var card = dictionaryArr[cards[i]];
+              hand += card;
+              if((i+1)%5==0){
+                playerHands.push(hand);
+                hand = "";
+              }
+              if(playerHands.length == numHands){
+                chrome.storage.local.set({"hands":playerHands}, function(){
+                  simReady();
+                });
+              }
+            }
         }
     });
-    dictionary.send(); 
-    chrome.storage.local.clear();
-    chrome.storage.local.set({"hands":pcardsstr});
-    chrome.storage.local.set({"board":ccardsstr});
-    chrome.runtime.sendMessage("runSimulation");
-}
+    dictionary.send();
+  }
+  
+  function simReady() {
+    chrome.storage.local.get(['hands','board'], function(result){
+        if(result.hands && result.board){
+          chrome.runtime.sendMessage("runSimulation");
+        } else {
+          console.error("Either board or hands did not store properly");
+        }
+    });
+  }
