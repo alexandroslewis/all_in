@@ -1,11 +1,19 @@
 chrome.runtime.onMessage.addListener(function(message){
-    if(message == "runSimulation"){
+    if(message == "runScript"){
+        chrome.tabs.query({"currentWindow":true}, function(tab) {
+            chrome.tabs.executeScript(tab[0].id, {file:"all_in.js"});
+        });
+    }
+});
+
+chrome.storage.onChanged.addListener(function(change){
+    if(change.key.hasOwnProperty("newValue")){
+        console.log(change.key);
         chrome.tabs.query({url:"http://propokertools.com/simulations"}, function (tab) {
             if(tab.length>0){
-                console.log(tab);
               var tabId = tab[0].id;
               chrome.tabs.update(tabId, {"active":true}, function(tab){
-                chrome.tabs.executeScript({
+                chrome.tabs.executeScript(tab.id,{
                     file:"simulation.js"
                 });
               });

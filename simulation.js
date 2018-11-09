@@ -1,23 +1,79 @@
-chrome.storage.local.get(['board','hands'], function(result) {
+chrome.storage.local.get(["key"], function(result) {
     var clear = document.querySelector('[title="Clear all inputs"]');
     clear.click();
-    createSimulation(result.board, result.hands);
+    console.log(result.key);
+    selectGame(result.key.game, result.key.cards, result.key.totCCards);
 });
 
-function createSimulation(ccards, pcards) {
-    chrome.storage.local.clear();
+function selectGame(game, cards, totCCards) {
+    var numHands;
+    if(game=="OmahaHiLo5"){
+        document.getElementById("gameSelector").value = "o85";
+        numHands = (cards.length - totCCards)/5;
+        parseCards(cards, 5, totCCards, numHands);
+        toggleHands(numHands);
+    } else if (game=="OmahaHiLo"){
+        document.getElementById("gameSelector").value = "o8";
+        numHands = totCCards/4;
+        parseCards(cards, 4, totCCards, numHands);
+        toggleHands(numHands);
+    }
+}
+
+function toggleHands(hands) {
     var toggle = document.getElementById("handToggler");
-    document.getElementById("gameSelector").value = "o85";
-    document.getElementById("boardField").value = ccards;
-    if(pcards.length>2 && toggle.innerText == "More hands"){
+    if(hands>2 && toggle.innerText == "More hands"){
+        toggle.click();
+    } else if(hands==2 && toggle.innerText == "Fewer hands"){
         toggle.click();
     }
-    for(i=0;i<pcards.length;i++){
+}
+
+function parseCards(cards, handSize, totCCards, numHands) {
+    var hands = [];
+    var boards = [];
+    var pcards = cards.slice(totCCards,cards.length);
+    var ccards = cards.slice(0,totCCards);
+    if(totCCards==7){
+        boards.push(ccards.slice(0,4));
+        ccards.splice(3,1);
+        boards.push(ccards.slice(0,4));
+    } else if(totCCards==10){
+        boards.push(ccards.slice(0,4), ccards.slice(5,9));
+    } else {
+        boards.push(ccards.slice(0,4));
+    }
+    for(i=0;i<pcards.length;i+handSize){
+        var hand = pcards.splice(i,i+handSize);
+        hands.push(hand);
+        if(hands.length==numHands){
+            createSimulation(boards, hands);
+        }
+    } 
+}
+
+function createSimulation(boards, hands) {
+    chrome.storage.local.clear();
+    if(boards.length==2){
+        document.getElementById("boardField").value = boards[0].join("");
+        submitSimulation(hands);
+        document.getElementById("boardField").value = boards[1].join("");
+        submitSimulation(hands);
+    } else {
+        document.getElementById("boardField").value = boards[0].join("");
+        submitSimulation(hands);
+    }
+}
+
+function submitSimulation(hands) {
+    for(i=0;i<hands.length;i++){
         var hIn = "h" + (i+1);
-        document.getElementById(hIn).value = pcards[i];
-        if(i == (pcards.length-1)){
+        document.getElementById(hIn).value = hands[i].join("");
+        if(i == (hands.length-1)){
             var submit = document.querySelector('[title="Simulate an all-in race"]');
             submit.click();
         }
     }
 }
+
+
