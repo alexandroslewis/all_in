@@ -1,7 +1,10 @@
-chrome.runtime.onMessage.addListener(function(message){
+chrome.runtime.onMessage.addListener(function(message, sender){
     if(message == "runScript"){
-        chrome.tabs.query({"currentWindow":true}, function(tab) {
-            chrome.tabs.executeScript(tab[0].id, {file:"all_in.js"});
+        chrome.tabs.executeScript(sender.tab.id, {file:"all_in.js"}, _=>{
+            let e = chrome.runtime.lastError;
+            if(e !== undefined){
+                console.log(sender.tab.id, _, e);
+            }
         });
     }
 });

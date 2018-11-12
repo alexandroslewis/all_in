@@ -1,9 +1,12 @@
 chrome.storage.local.get(["key"], function(result) {
-    var clear = document.querySelector('[title="Clear all inputs"]');
-    clear.click();
-    console.log(result.key);
+    clearSimulation();
     selectGame(result.key.game, result.key.cards, result.key.totCCards);
 });
+
+function clearSimulation() {
+    var clear = document.querySelector('[title="Clear all inputs"]');
+    clear.click();
+}
 
 function selectGame(game, cards, totCCards) {
     var numHands;
@@ -34,16 +37,17 @@ function parseCards(cards, handSize, totCCards, numHands) {
     var boards = [];
     var pcards = cards.slice(totCCards,cards.length);
     var ccards = cards.slice(0,totCCards);
+    boards.push(ccards.slice(0,3));
     if(totCCards==7){
         boards.push(ccards.slice(0,4));
         ccards.splice(3,1);
         boards.push(ccards.slice(0,4));
     } else if(totCCards==10){
-        boards.push(ccards.slice(0,4), ccards.slice(5,9));
+        boards.push(ccards.slice(0,4), ccards.slice(5,8), ccards.slice(5,9));
     } else {
         boards.push(ccards.slice(0,4));
     }
-    for(i=0;i<pcards.length;i+handSize){
+    for(var i=0;i<pcards.length;i+handSize){
         var hand = pcards.splice(i,i+handSize);
         hands.push(hand);
         if(hands.length==numHands){
@@ -54,19 +58,15 @@ function parseCards(cards, handSize, totCCards, numHands) {
 
 function createSimulation(boards, hands) {
     chrome.storage.local.clear();
-    if(boards.length==2){
-        document.getElementById("boardField").value = boards[0].join("");
-        submitSimulation(hands);
-        document.getElementById("boardField").value = boards[1].join("");
-        submitSimulation(hands);
-    } else {
-        document.getElementById("boardField").value = boards[0].join("");
+    for(var i=0;i<boards.length;i++){
+        clearSimulation();
+        document.getElementById("boardField").value = boards[i].join("");
         submitSimulation(hands);
     }
 }
 
 function submitSimulation(hands) {
-    for(i=0;i<hands.length;i++){
+    for(var i=0;i<hands.length;i++){
         var hIn = "h" + (i+1);
         document.getElementById(hIn).value = hands[i].join("");
         if(i == (hands.length-1)){
