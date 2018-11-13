@@ -1,17 +1,15 @@
-var config = {attributes: true, childList: true, characterData: true};
-
-function checkTable() {
+function init() {
+    var config = {attributes: true, childList: true, characterData: true};
     var els = document.querySelectorAll(".table_info span");
     observer.observe(els[0], config);
-    
 }
 
 var callback = function(mutationsList, observer) {
     for(var mutation of mutationsList) {
         if(mutation.addedNodes.length>0){
-            var game = mutation.addedNodes[0].textContent;
-            if(game.indexOf("Omaha") > 0 || game.indexOf("Holdem")>0){
-                chrome.runtime.sendMessage("runScript");
+            var table = mutation.addedNodes[0].textContent;
+            if(table.indexOf("Omaha") > 0){
+                checkTable(table);
             }
         }
     }
@@ -19,4 +17,23 @@ var callback = function(mutationsList, observer) {
 
 var observer = new MutationObserver(callback);
 
-checkTable();
+init ();
+
+function checkTable(table) {
+    chrome.storage.sync.get(["settings"], function(result) {
+        if(result.settings){
+            var settings = result.settings;
+            for(var i=0;i<settings.length;i++){
+                if(settings[i].enabled == true){
+                    if(settings[i].option == 1 && table.indexOf("Omaha")>0 && table.indexOf("Hi-Lo")>0 && table.indexOf("5")>0){
+                        chrome.runtime.sendMessage("runScript");
+                    } else if(settings[i].option == 2 && table.indexOf("Omaha")>0 && table.indexOf("Hi-Lo")>0 && table.indexOf("5")<0){
+                        chrome.runtime.sendMessage("runScript");
+                    }
+                }
+            }
+        } else {
+            console.err("Extension settings have not been saved.")
+        }
+    });
+}

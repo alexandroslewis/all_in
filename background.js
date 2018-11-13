@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener(function(message, sender){
 });
 
 chrome.storage.onChanged.addListener(function(change){
-    if(change.key.hasOwnProperty("newValue")){
+    if(change.key && change.key.hasOwnProperty("newValue")){
         console.log(change.key);
         chrome.tabs.query({url:"http://propokertools.com/simulations"}, function (tab) {
             if(tab.length>0){
