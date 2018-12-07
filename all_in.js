@@ -68,8 +68,14 @@ function getGame() {
     var info = document.getElementsByClassName("table_info")[0].textContent;
     if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo")>0 && info.indexOf("5")>0){
         return "OmahaHiLo5";
-    } else if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo") && info.indexOf("5")<0) {
+    } else if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo")>0 && info.indexOf("5")<0) {
         return "OmahaHiLo";
+    } else if(info.indexOf("Omaha")>0 && info.indexOf("5")>0 && info.indexOf("Hi-Lo")<0) {
+        return "OmahaHi5";
+    } else if(info.indexOf("Omaha")>0) {
+        return "OmahaHi";
+    } else if(info.indexOf("Holdem")>0) {
+        return "Holdem";
     }
 }
 
