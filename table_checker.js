@@ -16,7 +16,7 @@ var callback = function(mutationsList, observer) {
         }
     }
 }
-
+console.log('table checker')
 var observer = new MutationObserver(callback);
 
 init ();
@@ -24,20 +24,20 @@ init ();
 function checkTable(table) {
     console.log('checkTables')
     console.log('OmahaHiLo5')
-    console.log(table.indexOf("Omaha")>0 && table.indexOf("Hi-Lo")>0 && table.indexOf("5")>0)
+    console.log(table.indexOf("Omaha")>0 && table.indexOf("Hi-Lo")>0 && table.indexOf("5 Card")>0)
     console.log('OmahaHiLo4')
-    console.log(table.indexOf("Omaha")>0 && table.indexOf("Hi-Lo")>0 && table.indexOf("5")<0)
+    console.log(table.indexOf("Omaha")>0 && table.indexOf("Hi-Lo")>0 && table.indexOf("5 Card")<0)
     console.log('OmahaHi5')
-    console.log(table.indexOf("Omaha")>0 && table.indexOf("5")>0)
+    console.log(table.indexOf("Omaha")>0 && table.indexOf("5 Card")>0)
     console.log('OmahaHi4')
     console.log(table.indexOf("Omaha")>0)
     console.log('Holdem')
     console.log(table.indexOf("Holdem")>0)
-    if(table.indexOf("Omaha")>0 && table.indexOf("Hi-Lo")>0 && table.indexOf("5")>0){
+    if(table.indexOf("Omaha")>0 && table.indexOf("Hi-Lo")>0 && table.indexOf("5 Card")>0){
         chrome.runtime.sendMessage("runScript");
-    } else if(table.indexOf("Omaha")>0 && table.indexOf("Hi-Lo")>0 && table.indexOf("5")<0){
+    } else if(table.indexOf("Omaha")>0 && table.indexOf("Hi-Lo")>0 && table.indexOf("5 Card")<0){
         chrome.runtime.sendMessage("runScript");
-    } else if(table.indexOf("Omaha")>0 && table.indexOf("5")>0){
+    } else if(table.indexOf("Omaha")>0 && table.indexOf("5 Card")>0){
         chrome.runtime.sendMessage("runScript");
     } else if(table.indexOf("Omaha")>0){
         chrome.runtime.sendMessage("runScript");

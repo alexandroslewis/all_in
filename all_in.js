@@ -17,7 +17,7 @@ var callback = function(mutationsList, observer) {
             instantiateObservers();
         }
     }
-};
+};   
 console.log('mid')
 var observer = new MutationObserver(callback);
 
@@ -67,11 +67,11 @@ function getTableId() {
 function getGame() {
     console.log('getGame')
     var info = document.getElementsByClassName("table_info")[0].textContent;
-    if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo")>0 && info.indexOf("5")>0){
+    if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo")>0 && info.indexOf("5 Card")>0){
         return "OmahaHiLo5";
-    } else if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo")>0 && info.indexOf("5")<0) {
+    } else if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo")>0 && info.indexOf("5 Card")<0) {
         return "OmahaHiLo";
-    } else if(info.indexOf("Omaha")>0 && info.indexOf("5")>0 && info.indexOf("Hi-Lo")<0) {
+    } else if(info.indexOf("Omaha")>0 && info.indexOf("5 Card")>0 && info.indexOf("Hi-Lo")<0) {
         return "OmahaHi5";
     } else if(info.indexOf("Omaha")>0) {
         return "OmahaHi";
