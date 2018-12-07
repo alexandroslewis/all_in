@@ -9,6 +9,8 @@ function clearSimulation() {
 }
 
 function selectGame(game, cards, totCCards) {
+    console.log('selectGame')
+    console.log(game)
     var numHands;
     if(game=="OmahaHiLo5"){
         document.getElementById("gameSelector").value = "o85";

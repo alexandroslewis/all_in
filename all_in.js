@@ -1,5 +1,5 @@
 var config = {attributes: true, childList: true, characterData: true};
-
+console.log('top')
 var callback = function(mutationsList, observer) {
     for(var mutation of mutationsList) {
         if (mutation.target.className == "player_name" && mutation.target.innerText == 'ALL IN') {
@@ -18,7 +18,7 @@ var callback = function(mutationsList, observer) {
         }
     }
 };
-
+console.log('mid')
 var observer = new MutationObserver(callback);
 
 function instantiateObservers() {
@@ -28,7 +28,7 @@ function instantiateObservers() {
         observer.observe(playerNames[i], config);
     }
 }
-
+console.log('bot')
 instantiateObservers();
 
 function getCards(cards) {
@@ -65,6 +65,7 @@ function getTableId() {
 }
 
 function getGame() {
+    console.log('getGame')
     var info = document.getElementsByClassName("table_info")[0].textContent;
     if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo")>0 && info.indexOf("5")>0){
         return "OmahaHiLo5";
@@ -88,5 +89,7 @@ function saveSim(cards){
     var tableId = getTableId();
     var game = getGame();
     var totCCards = getCommunityCardsSize();
+    console.log('saveSim')
+    console.log(game)
     chrome.storage.local.set({"key":{"id":tableId,"game":game,"cards":cards, "totCCards":totCCards}});
 }
