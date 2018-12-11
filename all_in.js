@@ -1,5 +1,5 @@
 var config = {attributes: true, childList: true, characterData: true};
-console.log('top')
+
 var callback = function(mutationsList, observer) {
     for(var mutation of mutationsList) {
         if (mutation.target.className == "player_name" && mutation.target.innerText == 'ALL IN') {
@@ -18,7 +18,7 @@ var callback = function(mutationsList, observer) {
         }
     }
 };   
-console.log('mid')
+
 var observer = new MutationObserver(callback);
 
 function instantiateObservers() {
@@ -28,7 +28,7 @@ function instantiateObservers() {
         observer.observe(playerNames[i], config);
     }
 }
-console.log('bot')
+
 instantiateObservers();
 
 function getCards(cards) {
@@ -73,7 +73,7 @@ function getGame() {
         return "OmahaHiLo";
     } else if(info.indexOf("Omaha")>0 && info.indexOf("5 Card")>0 && info.indexOf("Hi-Lo")<0) {
         return "OmahaHi5";
-    } else if(info.indexOf("Omaha")>0) {
+    } else if(info.indexOf("Omaha")>0 && info.indexOf("5 Card")<0 && info.indexOf("Hi-Lo")<0) {
         return "OmahaHi";
     } else if(info.indexOf("Holdem")>0) {
         return "Holdem";
