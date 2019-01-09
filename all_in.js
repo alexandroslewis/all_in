@@ -2,22 +2,23 @@ var config = {attributes: true, childList: true, characterData: true};
 
 var callback = function(mutationsList, observer) {
     for(var mutation of mutationsList) {
+        console.log(mutation.target.id)
         if (mutation.target.className == "player_name" && mutation.target.innerText == 'ALL IN') {
             console.log("first player went all in");
             observer.disconnect();
             var cards = document.getElementById("community_cards");
             observer.observe(cards, config);
-        } else if (mutation.target.id == 'community_cards' && mutation.target.childElementCount > 0) {
+        } else if (mutation.target.className != "player_name" && mutation.target.childElementCount > 0) {
             console.log("game is all in");
             var assets = document.getElementsByClassName("card");
             getCards(assets);
-        } else if (mutation.target.id == 'community_cards' && mutation.target.childElementCount == 0) {
+        } else if (mutation.target.className != "player_name" && mutation.target.childElementCount == 0) {
             console.log("resetting script");
             observer.disconnect();
             instantiateObservers();
         }
     }
-};
+};   
 
 var observer = new MutationObserver(callback);
 
@@ -65,11 +66,18 @@ function getTableId() {
 }
 
 function getGame() {
+    console.log('getGame')
     var info = document.getElementsByClassName("table_info")[0].textContent;
-    if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo")>0 && info.indexOf("5")>0){
+    if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo")>0 && info.indexOf("5 Card")>0){
         return "OmahaHiLo5";
-    } else if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo") && info.indexOf("5")<0) {
+    } else if(info.indexOf("Omaha")>0 && info.indexOf("Hi-Lo")>0 && info.indexOf("5 Card")<0) {
         return "OmahaHiLo";
+    } else if(info.indexOf("Omaha")>0 && info.indexOf("5 Card")>0 && info.indexOf("Hi-Lo")<0) {
+        return "OmahaHi5";
+    } else if(info.indexOf("Omaha")>0 && info.indexOf("5 Card")<0 && info.indexOf("Hi-Lo")<0) {
+        return "OmahaHi";
+    } else if(info.indexOf("Holdem")>0) {
+        return "Holdem";
     }
 }
 
@@ -82,5 +90,7 @@ function saveSim(cards){
     var tableId = getTableId();
     var game = getGame();
     var totCCards = getCommunityCardsSize();
+    console.log('saveSim')
+    console.log(game)
     chrome.storage.local.set({"key":{"id":tableId,"game":game,"cards":cards, "totCCards":totCCards}});
 }

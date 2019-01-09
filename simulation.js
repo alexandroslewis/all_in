@@ -9,6 +9,8 @@ function clearSimulation() {
 }
 
 function selectGame(game, cards, totCCards) {
+    console.log('selectGame')
+    console.log(game)
     var numHands;
     if(game=="OmahaHiLo5"){
         document.getElementById("gameSelector").value = "o85";
@@ -17,8 +19,38 @@ function selectGame(game, cards, totCCards) {
         toggleHands(numHands);
     } else if (game=="OmahaHiLo"){
         document.getElementById("gameSelector").value = "o8";
-        numHands = totCCards/4;
+        numHands = (cards.length - totCCards)/4;
         parseCards(cards, 4, totCCards, numHands);
+        toggleHands(numHands);
+    } else if (game=="OmahaHi5"){
+        document.getElementById("gameSelector").value = "oh5";
+        numHands = (cards.length - totCCards)/5;
+        parseCards(cards, 5, totCCards, numHands);
+        toggleHands(numHands);
+    } else if (game=="OmahaHi"){
+        document.getElementById("gameSelector").value = "oh";
+        numHands = (cards.length - totCCards)/4;
+        parseCards(cards, 4, totCCards, numHands);
+        toggleHands(numHands);
+    } else if (game=="Razz"){
+        document.getElementById("gameSelector").value = "rz";
+        numHands = (cards.length - totCCards)/7;
+        parseCards(cards, 7, totCCards, numHands);
+        toggleHands(numHands);
+    } else if (game=="StudHi"){
+        document.getElementById("gameSelector").value = "st";
+        numHands = (cards.length - totCCards)/7;
+        parseCards(cards, 7, totCCards, numHands);
+        toggleHands(numHands);
+    } else if (game=="StudHiLo"){
+        document.getElementById("gameSelector").value = "s8";
+        numHands = (cards.length - totCCards)/7;
+        parseCards(cards, 7, totCCards, numHands);
+        toggleHands(numHands);
+    } else if (game=="Holdem"){
+        document.getElementById("gameSelector").value = "he";
+        numHands = (cards.length - totCCards)/2;
+        parseCards(cards, 2, totCCards, numHands);
         toggleHands(numHands);
     }
 }
